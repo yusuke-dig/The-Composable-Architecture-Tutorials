@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  The-Composable-Architecture-Tutorials
-//
-//  Created by yusukeyokota on 2026/03/03.
-//
-
 import SwiftUI
 
 struct ContentView: View {
