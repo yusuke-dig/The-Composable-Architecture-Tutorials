@@ -1,17 +1,39 @@
+import ComposableArchitecture
 import SwiftUI
 
 struct ContentView: View {
+    let store: StoreOf<CounterFeature>
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("\(store.count)")
+                .font(.largeTitle)
+                .padding()
+                .background(Color.black.opacity(0.1))
+                .cornerRadius(10)
+              HStack {
+                Button("-") {
+                    store.send(.decrementButtonTapped)
+                }
+                .font(.largeTitle)
+                .padding()
+                .background(Color.black.opacity(0.1))
+                .cornerRadius(10)
+                
+                Button("+") {
+                    store.send(.incrementButtonTapped)
+                }
+                .font(.largeTitle)
+                .padding()
+                .background(Color.black.opacity(0.1))
+                .cornerRadius(10)
+              }
         }
-        .padding()
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(store: Store(initialState: CounterFeature.State()) {
+        CounterFeature()
+    })
 }
