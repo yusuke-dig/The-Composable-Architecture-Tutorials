@@ -8,14 +8,20 @@ struct CounterFeature {
         var count = 0
         var fact: String?
         var isLoading = false
+        var isTimerRunning = false
+        let timerID = UUID()
     }
-    
+
     enum Action {
         case decrementButtonTapped
         case factButtonTapped
         case factResponse(String)
         case incrementButtonTapped
+        case timerTick
+        case toggleTimerButtonTapped
     }
+    
+    nonisolated enum CancelID: Hashable { case timer(UUID) }
     
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -38,11 +44,32 @@ struct CounterFeature {
                 state.fact = fact
                 state.isLoading = false
                 return .none
-            
+                
             case .incrementButtonTapped:
                 state.count += 1
                 state.fact = nil
                 return .none
+                
+            case .timerTick:
+                state.count += 1
+                state.fact = nil
+                return .none
+                
+            case .toggleTimerButtonTapped:
+                state.isTimerRunning.toggle()
+                let cancelID = CancelID.timer(state.timerID)
+                
+                if state.isTimerRunning {
+                    return .run { send in
+                        while true {
+                            try await Task.sleep(for: .seconds(1))
+                            await send(.timerTick)
+                        }
+                    }
+                    .cancellable(id: cancelID)
+                } else {
+                    return .cancel(id: cancelID)
+                }
             }
         }
     }
