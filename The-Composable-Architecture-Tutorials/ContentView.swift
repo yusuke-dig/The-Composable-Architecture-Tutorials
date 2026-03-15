@@ -11,7 +11,7 @@ struct ContentView: View {
                 .padding()
                 .background(Color.black.opacity(0.1))
                 .cornerRadius(10)
-              HStack {
+            HStack {
                 Button("-") {
                     store.send(.decrementButtonTapped)
                 }
@@ -27,7 +27,24 @@ struct ContentView: View {
                 .padding()
                 .background(Color.black.opacity(0.1))
                 .cornerRadius(10)
-              }
+            }
+            
+            Button("Fact") {
+                store.send(.factButtonTapped)
+            }
+            .font(.largeTitle)
+            .padding()
+            .background(Color.black.opacity(0.1))
+            .cornerRadius(10)
+            
+            if store.isLoading {
+                ProgressView()
+            } else if let fact = store.fact {
+                Text(fact)
+                    .font(.largeTitle)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
         }
     }
 }
