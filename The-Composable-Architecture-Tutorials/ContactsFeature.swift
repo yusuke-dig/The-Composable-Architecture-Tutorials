@@ -24,8 +24,8 @@ struct ContactsFeature {
             case confirmDeletion(id: Contact.ID)
         }
     }
-    
-    var body: some Reducer<State, Action> {
+
+    var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .addButtonTapped:

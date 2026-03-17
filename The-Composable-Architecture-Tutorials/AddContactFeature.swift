@@ -53,7 +53,7 @@ struct AddContactFeature {
     
     @Dependency(\.dismiss) var dismiss
     
-    var body: some Reducer<State, Action> {
+    var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .cancelButtonTapped:

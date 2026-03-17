@@ -26,7 +26,7 @@ struct CounterFeature {
     @Dependency(\.continuousClock) var clock
     @Dependency(\.numberFact) var numberFact
     
-    var body: some Reducer<State, Action> {
+    var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .decrementButtonTapped:
@@ -62,7 +62,7 @@ struct CounterFeature {
                 
                 if state.isTimerRunning {
                     return .run { send in
-                        for await _ in await self.clock.timer(interval: .seconds(1)) {
+                        for await _ in self.clock.timer(interval: .seconds(1)) {
                             await send(.timerTick)
                         }
                     }
