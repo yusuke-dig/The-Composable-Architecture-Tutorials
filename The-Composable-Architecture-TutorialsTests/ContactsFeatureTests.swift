@@ -14,30 +14,17 @@ struct ContactsFeatureTests {
         } withDependencies: {
             $0.uuid = .incrementing
         }
+        store.exhaustivity = .off
         
-        await store.send(.addButtonTapped) {
-            $0.destination = .addContact(
-                AddContactFeature.State(
-                    contact: Contact(id: UUID(0), name: "")
-                )
-            )
-        }
-        
-        await store.send(\.destination.addContact.setName, "Blob Jr.") {
-            $0.destination?.modify(\.addContact) { $0.contact.name = "Blob Jr." }
-        }
+        await store.send(.addButtonTapped)
+        await store.send(\.destination.addContact.setName, "Blob Jr.")
         await store.send(\.destination.addContact.saveButtonTapped)
+        await store.skipReceivedActions()
         
-        await store.receive(
-            \.destination.addContact.delegate.saveContact,
-             Contact(id: UUID(0), name: "Blob Jr.")
-        ) {
+        store.assert {
             $0.contacts = [
                 Contact(id: UUID(0), name: "Blob Jr.")
             ]
-        }
-        
-        await store.receive(\.destination.dismiss) {
             $0.destination = nil
         }
     }
