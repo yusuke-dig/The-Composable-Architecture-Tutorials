@@ -28,4 +28,28 @@ struct ContactsFeatureTests {
             $0.destination = nil
         }
     }
+    
+    @Test
+    func deleteContact() async {
+        let state = ContactsFeature.State(
+            contacts: [
+                Contact(id: UUID(0), name: "Blob"),
+                Contact(id: UUID(1), name: "Blob Jr."),
+            ]
+        )
+        let store = TestStore(initialState: state) {
+            ContactsFeature()
+        }
+        
+        await store.send(.deleteButtonTapped(id: UUID(1))) {
+            $0.destination = .alert(.deleteConfirmation(id: UUID(1)))
+        }
+        await store.send(\.destination.alert.confirmDeletion, UUID(1)) {
+            $0.contacts = [
+                Contact(id: UUID(0), name: "Blob")
+            ]
+            $0.destination = nil
+        }
+    }
 }
+
